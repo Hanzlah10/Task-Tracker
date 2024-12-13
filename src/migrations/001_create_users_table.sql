@@ -1,22 +1,18 @@
-
-
-
 CREATE TABLE IF NOT EXISTS users (
-    id PRIMARY KEY AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
 CREATE TABLE IF NOT EXISTS tasks (
-    id PRIMARY KEY AUTO_INCREMENT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     userId INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    status ENUM('pending','in-progress', 'completed') DEFAULT 'pending',
+    status ENUM('pending', 'in-progress', 'completed') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (userId) REFERENCES users(id),
-)
+    FOREIGN KEY (userId) REFERENCES users(id)
+);

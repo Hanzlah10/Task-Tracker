@@ -1,4 +1,5 @@
 import { apiError } from "../utlis/apiError"
+import { sqlConnection } from "../config/db.config"
 
 const registerUser = async (req, res) => {
 
@@ -9,7 +10,10 @@ const registerUser = async (req, res) => {
     }
 
     // const existedUser = 
-    // learn about schema then proceed with this
+    const existedUser = sqlConnection("SELECT * FROM users WHERE email = ?", [email])
+    if (existedUser.length > 0) {
+        throw new apiError(400, "User Already Exist !")
+    }
 
 
 

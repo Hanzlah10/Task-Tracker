@@ -1,10 +1,10 @@
-import { Router } from 'express'
-import { registerUser, printHello } from '../controllers/user.controller.js'
+import { Router } from 'express';
+import { registerUser, printHello } from '../controllers/user.controller.js';
 
 
 const userRouter = Router()
 
-userRouter.route('/register', registerUser)
-userRouter.route('/demo', printHello)
+userRouter.route('/register').post(registerUser)
+userRouter.route('/demo').get(printHello)
 
 export { userRouter }  

@@ -16,7 +16,7 @@ app.get('/', printHello)
 
 // routes
 
-app.use('/api/v1/users', userRouter)
+app.get('/api/v1/users', userRouter)
 
 
 export { app }

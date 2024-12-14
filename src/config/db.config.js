@@ -20,9 +20,9 @@ const sqlConnection = async (query, varArray = []) => {
 
         connection.release();
         return result
+
     } catch (error) {
         console.log(error);
-
     }
 }
 export {

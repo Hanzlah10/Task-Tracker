@@ -1,10 +1,10 @@
 import { Router } from 'express'
-import { registerUser } from '../controllers/user.controller'
+import { registerUser, printHello } from '../controllers/user.controller.js'
 
 
 const userRouter = Router()
 
 userRouter.route('/register', registerUser)
+userRouter.route('/demo', printHello)
 
-
-export default userRouter 
+export { userRouter }  

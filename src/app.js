@@ -1,6 +1,6 @@
 
 import express from 'express';
-import { userRouter } from './routes/user.routes';
+import { userRouter } from './routes/user.routes.js';
 
 const app = express();
 
@@ -8,9 +8,10 @@ const app = express();
 
 app.use('/static', express.static('public'));
 
-app.get('/', (req, res) => {
-    res.send('<h1>Hello World! how are you<h1>')
-})
+const printHello = (req, res) => {
+    res.send("HEllo")
+}
+app.get('/', printHello)
 
 
 // routes

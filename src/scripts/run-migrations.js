@@ -38,7 +38,6 @@ const runMigration = async () => {
     } finally {
         process.exit(0);
     }
-
 }
 runMigration();
 

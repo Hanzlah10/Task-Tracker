@@ -2,21 +2,41 @@ import { apiError } from "../utlis/apiError.js"
 import { sqlConnection } from "../config/db.config.js"
 import { apiResponse } from "../utlis/apiResponse.js"
 import { asyncHandler } from "../utlis/asyncHandler.js"
+import jwt from 'jsonwebtoken'
+import { config } from "dotenv"
+config()
+
+
+const options = {
+    httpOnly: true,
+    secure: true
+}
+
+const generateToken = async (id) => {
+    return jwt.sign(
+        {
+            id
+        },
+        process.env.TOKEN_SECRET,
+        {
+            expiresIn: process.env.TOKEN_EXPIRY
+        }
+    )
+}
 
 const registerUser = asyncHandler(async (req, res) => {
 
-    const { fullName, userName, password, email } = req.body || req.header
-
-    if ([fullName, userName, password, email].some((field) => !field || field.trim() === "")) {
-        throw new apiError(400, "All Feilds are required !")
+    const { username, password, email } = req.body
+    if (!username || !email || !password) {
+        throw new apiError(400, "no data")
     }
 
-    const existedUser = await sqlConnection("SELECT * FROM `users` WHERE `email` = ?", [email])
+    const existedUser = await sqlConnection("SELECT * FROM `users` WHERE `username` = ?", [username])
     if (existedUser.length > 0) {
         throw new apiError(400, "User Already Exist !")
     }
 
-    const insertResult = await sqlConnection("INSERT INTO users(email, username, password) VALUES (?,?,?,?) ", [email, userName, password]);
+    const insertResult = await sqlConnection("INSERT INTO users(email, username, password) VALUES (?,?,?) ", [email, username, password]);
 
     if (!insertResult) {
         throw new apiError(400, 'User not created!')
@@ -43,30 +63,61 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const existedUser = await sqlConnection('SELECT * FROM `users` WHERE `username` = ?', [username])
 
-    if (existedUser.length > 0) {
-        console.log("User exists:", existedUser[0]);
-    } else {
-        console.log("User does not exist.");
+    if (!existedUser.length > 0) {
+        throw new apiError(400, 'User not found')
     }
-
     if (existedUser[0].password !== password) {
         throw new apiError(400, 'password is incorrect')
     }
 
+    const token = await generateToken(existedUser[0].id)
+
+    const verifiedUser = await sqlConnection('UPDATE `users` SET `refreshToken` = ? WHERE id = ?', [token, existedUser[0].id])
+    console.log(verifiedUser);
+
+    if (existedUser[0] && existedUser[0].password) {
+        delete existedUser[0].password;
+    }
+
+    existedUser[0].refreshToken = token
+
     return res
         .status(201)
+        .cookie('token', token, options)
         .json(
-            new apiResponse(200, "user loggedin successfully", existedUser[0])
+            new apiResponse(200, "user loggedin successfully", existedUser)
         )
-
-
 })
 
-const printHello = (req, res) => {
-    res.send("HEllo")
-}
+
+const logoutUser = asyncHandler(async (req, res) => {
+
+    // const id = req.id
+    const id = req.body.id
+
+
+    if (!id) {
+        throw new apiError(400, "User ID is required to log out.");
+    }
+
+    try {
+        sqlConnection('UPDATE `users` SET refreshToken = NULL WHERE `id` = ?', [id])
+        res
+            .status(200)
+            .json(
+                new apiResponse(201, "Logged Out successfully!", {})
+            )
+    }
+    catch (error) {
+        console.error(error);
+        throw new apiError(500, "An error occurred while logging out.");
+    }
+})
+
 
 export {
     registerUser,
-    printHello
+    loginUser,
+    logoutUser
+
 }

@@ -3,7 +3,9 @@ import { config } from "dotenv";
 config();
 
 const sqlConnection = async (query, varArray = []) => {
+
     try {
+
         const pool = mysql.createPool({
             connectionLimit: 10,
             host: '127.0.0.1',
@@ -12,9 +14,6 @@ const sqlConnection = async (query, varArray = []) => {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME
         })
-        console.log(process.env.DB_PASSWORD);
-        console.log(process.env.DB_USER,);
-
         const connection = await pool.getConnection();
         const [result] = await connection.execute(query, varArray);
 

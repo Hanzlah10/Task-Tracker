@@ -1,23 +1,22 @@
 import { sqlConnection } from "../config/db.config.js";
 import { apiError } from "../utlis/apiError.js";
-import { apiResponse } from "../utlis/apiResponsejs";
-import { asyncHandler } from "../utlis/asyncHandle.jsr";
+import { apiResponse } from "../utlis/apiResponse.js";
+import { asyncHandler } from "../utlis/asyncHandler.js";
 
 // getAllTasks, getTaskById, createTask, updateTask, deleteTask 
 
 
 const getAllTasks = asyncHandler(async (req, res) => {
-    const id = req.user.id
-    if (!id) {
+    const userId = req.user.id
+    if (!userId) {
         throw new apiError(400, "UserId not found!")
     }
 
-    const tasks = await sqlConnection('SELECT * FROM `tasks` WHERE userId = ?', [id])
+    const tasks = await sqlConnection('SELECT * FROM `tasks` WHERE `userId` = ?', [userId])
 
     if (!tasks) {
         throw new apiError(404, 'failed to fetch tasks')
     }
-    console.log(tasks);
 
     return res
         .status(200)
@@ -28,19 +27,19 @@ const getAllTasks = asyncHandler(async (req, res) => {
 
 const getTaskById = asyncHandler(async (req, res) => {
 
-    const taskId = req.params
+    const taskId = req.params.id
     const userId = req.user.id
     if (!taskId) {
         throw new apiError('Task ID not found!')
     }
 
-    const task = await sqlConnection('SELECT * FROM `tasks` WHERE `tasks.id` = ? AND `tasks.userId`= ?', [taskId, userId])
+
+    const task = await sqlConnection('SELECT * FROM `tasks` WHERE `id` = ? AND `userId`= ?', [taskId, userId])
 
     if (!task) {
         throw new apiError(400, 'task not found')
     }
 
-    console.log(task)
     return res
         .status(200)
         .json(
@@ -50,17 +49,31 @@ const getTaskById = asyncHandler(async (req, res) => {
 })
 
 const createTask = asyncHandler(async (req, res) => {
-    const { title, description, status } = req.body
+    const { title, description, status } = req.body;
+    const userId = req.user.id;
+    console.log(req.body);
 
-    console.log(title, description, status);
-    //check if present or not -> remaining
+    console.log(userId);
 
+    if (!title || !description || !status) {
+        throw new apiError(400, "All fields (title, description, status) are required");
+    }
 
+    try {
+        const query = 'INSERT INTO `tasks` (title, description, status, userId) VALUES (?, ?, ?, ?)';
+        const createdTaskResult = await sqlConnection(query, [title, description, status, userId]);
 
+        const createdTask = await sqlConnection('SELECT * FROM `tasks` WHERE id = ?', [createdTaskResult.insertId])
+        return res
+            .status(201)
+            .json(
+                new apiResponse(201, "Task created successfully", createdTask)
+            );
+    } catch (error) {
+        throw new apiError(400, error?.message || "Failed to create task");
+    }
+});
 
+//user nahi ara h req.
 
-})
-
-
-
-export { getAllTasks, getTaskById }
+export { getAllTasks, getTaskById, createTask }

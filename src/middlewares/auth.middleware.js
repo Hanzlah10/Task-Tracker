@@ -23,7 +23,7 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
             throw new apiError(401, "Invalid  Token")
         }
 
-        req.user = user
+        req.user = user[0]
         console.log(user);
 
 

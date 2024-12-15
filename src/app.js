@@ -2,6 +2,7 @@
 import express from 'express';
 import { userRouter } from './routes/user.routes.js';
 import bodyParser from 'body-parser';
+import { taskRouter } from './routes/task.routes.js';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.get('/', printHello)
 // routes
 
 app.use('/api/v1/users', userRouter)
+app.use('/api/v1/tasks', taskRouter)
 
 
 export { app }

@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken'
 import { config } from "dotenv"
 config()
 
-
 const options = {
     httpOnly: true,
     secure: true
@@ -92,9 +91,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
 
-    // const id = req.id
     const id = req.body.id
-
 
     if (!id) {
         throw new apiError(400, "User ID is required to log out.");

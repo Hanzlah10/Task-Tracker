@@ -5,7 +5,6 @@ config();
 const sqlConnection = async (query, varArray = []) => {
 
     try {
-
         const pool = mysql.createPool({
             connectionLimit: 10,
             host: '127.0.0.1',

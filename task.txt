@@ -1,2 +1,2 @@
-verify jwt - protect routes
+
 tasks controllers

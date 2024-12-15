@@ -1,2 +1,8 @@
 
 tasks controllers
+1)create, 
+2)update description, title,status, 
+3)delete,
+4)get all tasks
+
+

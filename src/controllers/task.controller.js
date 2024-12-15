@@ -3,7 +3,7 @@ import { apiError } from "../utlis/apiError.js";
 import { apiResponse } from "../utlis/apiResponse.js";
 import { asyncHandler } from "../utlis/asyncHandler.js";
 
-// getAllTasks, getTaskById, createTask, updateTask, deleteTask 
+//  updateTask, deleteTask 
 
 
 const getAllTasks = asyncHandler(async (req, res) => {
@@ -74,6 +74,5 @@ const createTask = asyncHandler(async (req, res) => {
     }
 });
 
-//user nahi ara h req.
 
 export { getAllTasks, getTaskById, createTask }

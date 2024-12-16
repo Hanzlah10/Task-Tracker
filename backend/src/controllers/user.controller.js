@@ -40,7 +40,7 @@ const registerUser = asyncHandler(async (req, res) => {
     if (!insertResult) {
         throw new apiError(400, 'User not created!')
     }
-    const createdUser = await sqlConnection("SELECT * FROM `users` WHERE id = ?", [insertResult.insertId])
+    const createdUser = await sqlConnection("SELECT id,username,email,created_at,updated_at,refreshToken FROM `users` WHERE id = ?", [insertResult.insertId])
 
     return res
         .status(201)

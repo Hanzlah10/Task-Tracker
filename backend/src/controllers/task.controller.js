@@ -3,8 +3,6 @@ import { apiError } from "../utlis/apiError.js";
 import { apiResponse } from "../utlis/apiResponse.js";
 import { asyncHandler } from "../utlis/asyncHandler.js";
 
-//  updateTask, deleteTask 
-
 
 const getAllTasks = asyncHandler(async (req, res) => {
     const userId = req.user.id
@@ -32,7 +30,6 @@ const getTaskById = asyncHandler(async (req, res) => {
     if (!taskId) {
         throw new apiError('Task ID not found!')
     }
-
 
     const task = await sqlConnection('SELECT * FROM `tasks` WHERE `id` = ? AND `userId`= ?', [taskId, userId])
 

@@ -24,7 +24,6 @@ export const verifyJwt = asyncHandler(async (req, res, next) => {
         }
 
         req.user = user[0]
-        console.log(user);
 
 
         next()

@@ -51,17 +51,14 @@ const getTaskById = asyncHandler(async (req, res) => {
 const createTask = asyncHandler(async (req, res) => {
     const { title, description, status } = req.body;
     const userId = req.user.id;
-    console.log(req.body);
 
-    console.log(userId);
 
     if (!title || !description || !status) {
         throw new apiError(400, "All fields (title, description, status) are required");
     }
 
     try {
-        const query = 'INSERT INTO `tasks` (title, description, status, userId) VALUES (?, ?, ?, ?)';
-        const createdTaskResult = await sqlConnection(query, [title, description, status, userId]);
+        const createdTaskResult = await sqlConnection('INSERT INTO `tasks` (title, description, status, userId) VALUES (?, ?, ?, ?)', [title, description, status, userId]);
 
         const createdTask = await sqlConnection('SELECT * FROM `tasks` WHERE id = ?', [createdTaskResult.insertId])
         return res
@@ -74,5 +71,43 @@ const createTask = asyncHandler(async (req, res) => {
     }
 });
 
+const updateTask = asyncHandler(async (req, res) => {
+    const taskId = req.params.id
+    const { title, description, status } = req.body;
+    const userId = req.user.id;
 
-export { getAllTasks, getTaskById, createTask }
+
+    try {
+        await sqlConnection('UPDATE `tasks` SET `title` = ?, `description` = ?, `status` = ? WHERE `id` = ? AND `userId` = ?', [title, description, status, taskId, userId])
+        const createdTask = await sqlConnection('SELECT * FROM `tasks` WHERE `userId` = ? AND `id` = ?', [userId, taskId])
+        console.log(createdTask);
+
+        return res
+            .status(201)
+            .json(
+                new apiResponse(200, "Task Updated Successfully", createdTask)
+            )
+    } catch (error) {
+        throw new apiError(400, error?.message || "Failed to update Task!")
+
+    }
+})
+
+const deleteTask = asyncHandler(async (req, res) => {
+    const taskId = req.params.id
+    const userId = req.user.id
+
+    try {
+        await sqlConnection('DELETE FROM `tasks` WHERE `id` = ? AND `userId` = ?', [taskId, userId])
+
+        res
+            .status(201)
+            .json(
+                new apiResponse(200, "Task Deleted Successfully")
+            )
+    } catch (error) {
+        throw new apiError(400, error?.message || "Failed to delete task!")
+    }
+})
+
+export { getAllTasks, getTaskById, createTask, updateTask, deleteTask }

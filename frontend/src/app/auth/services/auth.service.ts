@@ -14,7 +14,6 @@ import { CurrentUserInterface } from "../types/currentUser.interface";
 export class AuthService {
     constructor(private http: HttpClient) { }
 
-
     loginUser(data: loginRequestInterface): Observable<ResponseInterface<CurrentUserInterface>> {
         let url = environment.apiUrl + '/login'
         return this.http.post<ResponseInterface<CurrentUserInterface>>(url, data)

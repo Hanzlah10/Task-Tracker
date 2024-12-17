@@ -63,27 +63,6 @@ export const loginEffect = createEffect(
 )
 
 
-// export const logoutEffect = createEffect(
-//     (
-//         persistenceService = inject(PersistenceService),
-//         actions$ = inject(Actions),
-//         router = inject(Router),
-
-//     ) => {
-
-//         return actions$.pipe(
-//             ofType(AuthActions.logout),
-//             take(1),
-//             tap(() => {
-//                 persistenceService.set('token', " ")
-//                 router.navigateByUrl('/login')
-//             })
-//         )
-//     }, {
-//     functional: true
-// }
-// )
-
 
 export const logoutEffect = createEffect(
     (

@@ -2,11 +2,14 @@ import { Component } from '@angular/core';
 import { PersistenceService } from '../../services/persistence.service';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../auth/store/actions';
+import { combineLatest } from 'rxjs';
+import { selectCurrentUser } from '../../../auth/store/reducer';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -14,6 +17,11 @@ export class NavbarComponent {
 
 
   constructor(private persistence: PersistenceService, private store: Store) { }
+
+  data$ = combineLatest({
+    user: this.store.select(selectCurrentUser),
+  })
+
 
   ngOnInit(): void {
     if (this.persistence.get('theme') === 'dark') {

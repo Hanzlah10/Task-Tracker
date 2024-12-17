@@ -45,7 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
     return res
         .status(201)
         .json(
-            new apiResponse(201, "User Created Successfully", createdUser)
+            new apiResponse(201, "User Created Successfully", createdUser[0])
         )
 
 })
@@ -84,7 +84,7 @@ const loginUser = asyncHandler(async (req, res) => {
         .status(201)
         .cookie('token', token, options)
         .json(
-            new apiResponse(200, "user loggedin successfully", existedUser)
+            new apiResponse(200, "user loggedin successfully", existedUser[0])
         )
 })
 

@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { AuthActions } from '../../store/actions';
 
 @Component({
   selector: 'app-register',
@@ -10,7 +12,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private store: Store) { }
 
   registerForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -19,8 +21,10 @@ export class RegisterComponent {
   });
 
 
+
+
   onSubmit() {
-    console.log(this.registerForm.value);
+    this.store.dispatch(AuthActions.register(this.registerForm.getRawValue()))
   }
 
 }

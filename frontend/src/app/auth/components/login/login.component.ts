@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { combineLatest } from 'rxjs';
+import { selectCurrentUser, selectValidationMessage } from '../../store/reducer';
+import { Store } from '@ngrx/store';
+import { AuthActions } from '../../store/actions';
 
 @Component({
   selector: 'app-login',
@@ -10,15 +14,16 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 })
 export class LoginComponent {
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private store: Store) { }
 
   loginForm = this.fb.nonNullable.group({
     username: ['', [Validators.required, Validators.minLength(3)]],
     password: ['', [Validators.required, Validators.minLength(3)]]
   })
 
+
   onSubmit() {
-    console.log(this.loginForm.value);
+    this.store.dispatch(AuthActions.login(this.loginForm.getRawValue()))
   }
 
 }

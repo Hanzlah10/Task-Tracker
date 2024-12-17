@@ -15,12 +15,12 @@ export class AuthService {
     constructor(private http: HttpClient) { }
 
     loginUser(data: loginRequestInterface): Observable<ResponseInterface<CurrentUserInterface>> {
-        let url = environment.apiUrl + '/login'
+        let url = environment.apiUrl + 'users/login'
         return this.http.post<ResponseInterface<CurrentUserInterface>>(url, data)
     }
 
     registerUser(data: RegisterRequestInterface): Observable<ResponseInterface<CurrentUserInterface>> {
-        let url = environment.apiUrl + '/register'
+        let url = environment.apiUrl + 'users/register'
         return this.http.post<ResponseInterface<CurrentUserInterface>>(url, data)
     }
 }

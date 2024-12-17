@@ -23,4 +23,8 @@ export class AuthService {
         let url = environment.apiUrl + 'users/register'
         return this.http.post<ResponseInterface<CurrentUserInterface>>(url, data)
     }
+    logoutUser(): Observable<ResponseInterface<{}>> {
+        let url = environment.apiUrl + 'users/logout'
+        return this.http.post<ResponseInterface<{}>>(url, {})
+    }
 }

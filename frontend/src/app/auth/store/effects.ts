@@ -2,7 +2,7 @@ import { inject } from "@angular/core";
 import { act, Actions, createEffect, ofType } from "@ngrx/effects";
 import { AuthService } from "../services/auth.service";
 import { AuthActions } from "./actions";
-import { catchError, map, of, switchMap, tap } from "rxjs";
+import { catchError, map, of, switchMap, take, takeUntil, tap } from "rxjs";
 import { ResponseError, ResponseInterface } from "../../shared/types/response.interface";
 import { CurrentUserInterface } from "../types/currentUser.interface";
 import { loginRequestInterface } from "../types/loginRequest.interface";
@@ -61,6 +61,48 @@ export const loginEffect = createEffect(
         functional: true
     }
 )
+
+
+// export const logoutEffect = createEffect(
+//     (
+//         persistenceService = inject(PersistenceService),
+//         actions$ = inject(Actions),
+//         router = inject(Router),
+
+//     ) => {
+
+//         return actions$.pipe(
+//             ofType(AuthActions.logout),
+//             take(1),
+//             tap(() => {
+//                 persistenceService.set('token', " ")
+//                 router.navigateByUrl('/login')
+//             })
+//         )
+//     }, {
+//     functional: true
+// }
+// )
+
+
+export const logoutEffect = createEffect(
+    (
+        persistenceService = inject(PersistenceService),
+        actions$ = inject(Actions),
+        router = inject(Router),
+    ) => {
+        return actions$.pipe(
+            ofType(AuthActions.logout),
+            take(1),
+            tap(() => {
+                persistenceService.set('token', '');
+                router.navigateByUrl('/login');
+            })
+        );
+    },
+    { functional: true, dispatch: false }
+);
+
 
 export const redirectAfterLoginEffect = createEffect(
     (actions$ = inject(Actions),

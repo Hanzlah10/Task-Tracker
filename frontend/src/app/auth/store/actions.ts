@@ -1,4 +1,4 @@
-import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import { createActionGroup, props } from '@ngrx/store';
 import { RegisterRequestInterface } from '../types/registerRequest.interface';
 import { CurrentUserInterface } from '../types/currentUser.interface';
 import { ResponseInterface } from '../../shared/types/response.interface';

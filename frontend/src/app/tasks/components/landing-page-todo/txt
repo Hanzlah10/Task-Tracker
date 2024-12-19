@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../auth/store/actions';
 import { taskActions } from '../../store/actions';
-import { combineLatest, distinctUntilChanged, filter, map, take } from 'rxjs';
+import { combineLatest, filter, map, Subscription, take } from 'rxjs';
 import { selectCurrentUser } from '../../../auth/store/reducer';
 import { selectSelectedTask, selectTasks } from '../../store/reducer';
 import { TaskInterface } from '../../types/task.interface';
@@ -17,11 +17,9 @@ import { TaskInterface } from '../../types/task.interface';
   styleUrl: './landing-page-todo.component.css'
 })
 export class LandingPageTodoComponent {
-
   formStatus: string = 'Add New';
   isFormVisible: boolean = false;
   editTask: TaskInterface | null = null;
-
   taskForm = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
     description: ['', Validators.required],
@@ -34,82 +32,90 @@ export class LandingPageTodoComponent {
     selectedTask: this.store.select(selectSelectedTask)
   })
 
+  // Add subscription to handle selectedTask updates
+  private selectedTaskSubscription?: Subscription;
+
   constructor(private fb: FormBuilder, private store: Store) {
     this.store.dispatch(AuthActions.getCurrentUser())
     this.store.dispatch(taskActions.getAllTasks())
   }
 
+  ngOnDestroy() {
+    this.selectedTaskSubscription?.unsubscribe();
+  }
 
   onSubmit(formStatus: string) {
     if (formStatus === 'Add New') {
       this.store.dispatch(taskActions.addTask(this.taskForm.getRawValue()));
     }
-    if (formStatus === 'Edit') {
-      if (this.editTask?.id) {  // Check specifically for id
-        this.store.dispatch(taskActions.updateTask({
-          id: this.editTask.id,
-          task: this.taskForm.getRawValue()
-        }));
-        this.editTask = null;  // Clear the editTask after submission
-      }
+    if (formStatus === 'Edit' && this.editTask?.id) {
+      this.store.dispatch(taskActions.updateTask({
+        id: this.editTask.id,
+        task: this.taskForm.getRawValue()
+      }));
     }
     this.closeModal();
   }
 
-
   openModal(formStatus: string, id?: number) {
     this.formStatus = formStatus;
+
+    // Cleanup previous subscription if exists
+    this.selectedTaskSubscription?.unsubscribe();
+
     if (formStatus === 'Add New') {
-      this.taskForm.reset();
+      this.editTask = null;
+      this.taskForm.reset({
+        title: '',
+        description: '',
+        status: 'pending'
+      });
     }
+
     if (formStatus === 'Edit' && id) {
+      // Reset form before loading new data
       this.taskForm.reset();
       this.editTask = null;
 
       this.store.dispatch(taskActions.getSingleTask({ id }));
 
-      this.store.select(selectSelectedTask)
+      // Create new subscription for selectedTask
+      this.selectedTaskSubscription = this.store.select(selectSelectedTask)
         .pipe(
-          filter(Boolean),
-          distinctUntilChanged()
+          //@ts-ignore
+          filter(task => task !== null && task.id === id), // Ensure we have the correct task
+          take(1)
         )
         .subscribe(task => {
-          this.taskForm.patchValue(task);
-          this.editTask = task;
+          if (task) {
+            this.editTask = task;
+            this.taskForm.patchValue({
+              title: task.title,
+              description: task.description,
+              status: task.status
+            });
+          }
         });
     }
+
     this.isFormVisible = true;
   }
 
-
-  // openModal(formStatus: string, id?: number) {
-  //   this.formStatus = formStatus;
-  //   if (formStatus === 'Add New') {
-  //     this.taskForm.reset();
-  //   }
-
-  //   if (formStatus === 'Edit' && id) {
-  //     this.store.dispatch(taskActions.getSingleTask({ id }));
-  //     this.store.select(selectSelectedTask).pipe(take(1)).subscribe((task) => {
-  //       if (task) {
-  //         this.taskForm.patchValue(task);
-  //         this.editTask = task;
-  //       }
-  //     });
-  //   }
-  //   this.isFormVisible = true;
-  // }
-
-
   closeModal() {
-    // this.taskForm.reset();
+    this.selectedTaskSubscription?.unsubscribe();
+    this.editTask = null;
+    this.taskForm.reset({
+      title: '',
+      description: '',
+      status: 'pending'
+    });
     this.isFormVisible = false;
   }
+
   deleteTask(id: number) {
     console.log(id);
     this.store.dispatch(taskActions.deleteTask({ id }));
   }
-
 }
 
 

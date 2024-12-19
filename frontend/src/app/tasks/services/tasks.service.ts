@@ -37,7 +37,7 @@ export class taskService {
         return this.http.get<ResponseInterface<TaskInterface>>(url, options);
     }
 
-    addTask(task: CreateTaskInterface): Observable<ResponseInterface<TaskInterface>> {
+    addTask(task: CreateTaskInterface): Observable<ResponseInterface<[TaskInterface]>> {
         const token = this.persistenceService.get('token')
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export class taskService {
         });
         const options = { headers }
         const url = environment.apiUrl + 'tasks/create';
-        return this.http.post<ResponseInterface<TaskInterface>>(url, task, options);
+        return this.http.post<ResponseInterface<[TaskInterface]>>(url, task, options);
     }
 
     updateTask(id: number, task: CreateTaskInterface): Observable<ResponseInterface<TaskInterface>> {
@@ -59,7 +59,7 @@ export class taskService {
         return this.http.patch<ResponseInterface<TaskInterface>>(url, task, options);
     }
 
-    deleteTask(id: number): Observable<ResponseInterface<{ id: number }>> {
+    deleteTask(id: number): Observable<ResponseInterface<[TaskInterface]>> {
         const token = this.persistenceService.get('token')
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export class taskService {
         });
         const options = { headers }
         const url = environment.apiUrl + 'tasks/delete/' + id;
-        return this.http.delete<ResponseInterface<{ id: number }>>(url, options);
+        return this.http.delete<ResponseInterface<[TaskInterface]>>(url, options);
     }
 }
 

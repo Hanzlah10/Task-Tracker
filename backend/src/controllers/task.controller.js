@@ -57,11 +57,11 @@ const createTask = asyncHandler(async (req, res) => {
     try {
         const createdTaskResult = await sqlConnection('INSERT INTO `tasks` (title, description, status, userId) VALUES (?, ?, ?, ?)', [title, description, status, userId]);
 
-        const createdTask = await sqlConnection('SELECT * FROM `tasks` WHERE id = ?', [createdTaskResult.insertId])
+        const AllTasks = await sqlConnection('SELECT * FROM `tasks` WHERE userId = ?', [userId])
         return res
             .status(201)
             .json(
-                new apiResponse(201, "Task created successfully", createdTask)
+                new apiResponse(201, "Task created successfully", AllTasks)
             );
     } catch (error) {
         throw new apiError(400, error?.message || "Failed to create task");
@@ -77,7 +77,7 @@ const updateTask = asyncHandler(async (req, res) => {
     try {
         await sqlConnection('UPDATE `tasks` SET `title` = ?, `description` = ?, `status` = ? WHERE `id` = ? AND `userId` = ?', [title, description, status, taskId, userId])
         const createdTask = await sqlConnection('SELECT * FROM `tasks` WHERE `userId` = ? AND `id` = ?', [userId, taskId])
-        console.log(createdTask);
+
 
         return res
             .status(201)
@@ -96,11 +96,12 @@ const deleteTask = asyncHandler(async (req, res) => {
 
     try {
         await sqlConnection('DELETE FROM `tasks` WHERE `id` = ? AND `userId` = ?', [taskId, userId])
+        const AllTasks = await sqlConnection('SELECT * FROM `tasks` WHERE userId = ?', [userId])
 
         res
             .status(201)
             .json(
-                new apiResponse(200, "Task Deleted Successfully", userId)
+                new apiResponse(200, "Task Deleted Successfully", AllTasks)
             )
     } catch (error) {
         throw new apiError(400, error?.message || "Failed to delete task!")

@@ -39,7 +39,7 @@ export const addTaskEffect = createEffect(
             ofType(taskActions.addTask),
             switchMap((request) =>
                 TaskService.addTask(request).pipe(
-                    map((response: ResponseInterface<TaskInterface>) => {
+                    map((response: ResponseInterface<[TaskInterface]>) => {
                         return taskActions.addTaskSuccess(response)
                     }),
                     catchError((errorResponse: ResponseErrorInterface) =>
@@ -63,7 +63,7 @@ export const deleteTaskEffect = createEffect(
             ofType(taskActions.deleteTask),
             switchMap((request) =>
                 TaskService.deleteTask(request.id).pipe(
-                    map((response: ResponseInterface<{ id: number }>) => {
+                    map((response: ResponseInterface<[TaskInterface]>) => {
                         return taskActions.deleteTaskSuccess(response)
                     }),
                     catchError((errorResponse: ResponseErrorInterface) =>

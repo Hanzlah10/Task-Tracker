@@ -1,6 +1,7 @@
 import { createFeature, createReducer, on } from "@ngrx/store";
 import { taskStateInterface } from "../types/taskState.interface";
 import { taskActions } from "./actions";
+import { act } from "@ngrx/effects";
 
 const initialState: taskStateInterface = {
     tasks: [],
@@ -37,7 +38,7 @@ const taskFeature = createFeature({
         on(taskActions.addTaskSuccess, (state, action) => (
             {
                 ...state,
-                tasks: [...state.tasks, action.data],
+                tasks: action.data,
                 message: action.message
             })),
         on(taskActions.addTaskFailure, (state, action) => ({
@@ -59,7 +60,7 @@ const taskFeature = createFeature({
         })),
         on(taskActions.deleteTaskSuccess, (state, action) => ({
             ...state,
-            tasks: state.tasks.filter(task => task.id !== action.data.id),
+            tasks: action.data,
             message: action.message
         })),
         on(taskActions.deleteTaskFailure, (state, action) => ({

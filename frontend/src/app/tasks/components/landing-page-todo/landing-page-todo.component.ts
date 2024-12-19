@@ -11,7 +11,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 })
 export class LandingPageTodoComponent {
 
-
+  isFromVisible: boolean = false;
   constructor(private fb: FormBuilder) { }
 
   formStatus: string = 'Add New';
@@ -30,9 +30,12 @@ export class LandingPageTodoComponent {
     this.formStatus = 'Edit';
   }
 
-  openModal(status: string) {
-
+  openModal(formStatus: string) {
+    this.formStatus = formStatus;
+    this.isFromVisible = true;
   }
-
+  closeModal() {
+    this.isFromVisible = false;
+  }
 
 }

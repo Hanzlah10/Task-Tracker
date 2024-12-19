@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     {
@@ -11,6 +12,11 @@ export const routes: Routes = [
     },
     {
         path: '',
-        loadChildren: () => import('./tasks/tasks.routes').then(m => m.tasksRoutes)
+        loadChildren: () => import('./tasks/tasks.routes').then(m => m.tasksRoutes),
+        canActivate: [AuthGuard]
+    },
+    {
+        path: '**',
+        redirectTo: 'login'
     }
 ];

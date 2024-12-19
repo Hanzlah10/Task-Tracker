@@ -3,7 +3,7 @@ export interface TaskInterface {
     title: string;
     description: string;
     status: string;
-    // created_at: Date;
-    // updated_at: Date;
+    created_at?: Date; //optional
+    updated_at?: Date; //optional
 }
 

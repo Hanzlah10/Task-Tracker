@@ -1,9 +1,9 @@
 import { inject } from "@angular/core";
-import { act, Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { AuthService } from "../services/auth.service";
 import { AuthActions } from "./actions";
-import { catchError, map, of, switchMap, take, takeUntil, tap } from "rxjs";
-import { ResponseError, ResponseInterface } from "../../shared/types/response.interface";
+import { catchError, map, of, switchMap, take, tap } from "rxjs";
+import { ResponseErrorInterface, ResponseInterface } from "../../shared/types/response.interface";
 import { CurrentUserInterface } from "../types/currentUser.interface";
 import { loginRequestInterface } from "../types/loginRequest.interface";
 import { RegisterRequestInterface } from "../types/registerRequest.interface";
@@ -22,7 +22,7 @@ export const registerEffects = createEffect(
                     map((response: ResponseInterface<CurrentUserInterface>) => {
                         return AuthActions.registerSuccess(response)
                     }),
-                    catchError((errorResponse: ResponseError) =>
+                    catchError((errorResponse: ResponseErrorInterface) =>
                         of(
                             AuthActions.registerFailure(errorResponse)
                         )
@@ -49,7 +49,7 @@ export const loginEffect = createEffect(
                         persistenceService.set('token', response.data.refreshToken)
                         return AuthActions.loginSuccess(response)
                     }),
-                    catchError((errorResponse: ResponseError) =>
+                    catchError((errorResponse: ResponseErrorInterface) =>
                         of(
                             AuthActions.loginFailure(errorResponse)
                         ))

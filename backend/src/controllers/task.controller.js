@@ -100,7 +100,7 @@ const deleteTask = asyncHandler(async (req, res) => {
         res
             .status(201)
             .json(
-                new apiResponse(200, "Task Deleted Successfully")
+                new apiResponse(200, "Task Deleted Successfully", {})
             )
     } catch (error) {
         throw new apiError(400, error?.message || "Failed to delete task!")

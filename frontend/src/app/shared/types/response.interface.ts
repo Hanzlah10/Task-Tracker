@@ -5,7 +5,7 @@ export interface ResponseInterface<T> {
     statusCode: number;
 }
 
-export interface ResponseError {
+export interface ResponseErrorInterface {
     statusCode: number;
     message: string
     errors: any,

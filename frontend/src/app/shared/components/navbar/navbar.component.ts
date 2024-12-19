@@ -15,13 +15,11 @@ import { CommonModule } from '@angular/common';
 })
 export class NavbarComponent {
 
-
   constructor(private persistence: PersistenceService, private store: Store) { }
 
   data$ = combineLatest({
     user: this.store.select(selectCurrentUser),
   })
-
 
   ngOnInit(): void {
     if (this.persistence.get('theme') === 'dark') {

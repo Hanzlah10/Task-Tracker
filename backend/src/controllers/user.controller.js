@@ -31,6 +31,8 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const existedUser = await sqlConnection("SELECT * FROM `users` WHERE `username` = ?", [username])
+    console.log(existedUser);
+
     if (existedUser.length > 0) {
         throw new apiError(400, "User Already Exist !")
     }
@@ -61,6 +63,7 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     const existedUser = await sqlConnection('SELECT * FROM `users` WHERE `username` = ?', [username])
+    console.log(existedUser);
 
     if (!existedUser.length > 0) {
         throw new apiError(400, 'User not found')

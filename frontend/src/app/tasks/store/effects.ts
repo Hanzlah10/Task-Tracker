@@ -101,3 +101,28 @@ export const updateTaskEffect = createEffect(
     },
     { functional: true }
 )
+
+export const getSingleTaskEffect = createEffect(
+    (
+        action$ = inject(Actions),
+        TaskService = inject(taskService)
+    ) => {
+        return action$.pipe(
+            ofType(taskActions.getSingleTask),
+            switchMap(({ id }) =>
+                TaskService.getSingleTask(id).pipe(
+                    map((response: ResponseInterface<TaskInterface>) => {
+                        return taskActions.getSingleTaskSuccess(response)
+                    }),
+                    catchError((errorResponse: ResponseErrorInterface) =>
+                        of(
+                            taskActions.getSingleTaskFailure(errorResponse)
+                        )
+                    )
+                )
+            )
+        );
+    },
+    { functional: true }
+)
+

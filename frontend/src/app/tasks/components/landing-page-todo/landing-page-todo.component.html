@@ -34,7 +34,7 @@
                 <h3 class="text-xl font-semibold text-white mb-2">{{task.title}}</h3>
                 <p class="text-white/70 mb-4">{{task.description}}</p>
                 <div class="flex justify-end space-x-3">
-                    <button (click)="openModal('Edit')"
+                    <button (click)="openModal('Edit',task.id)"
                         class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/90 text-sm font-medium transition-all duration-300 hover:shadow-lg">
                         Edit
                     </button>

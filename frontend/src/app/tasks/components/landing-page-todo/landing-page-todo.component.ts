@@ -4,9 +4,10 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../auth/store/actions';
 import { taskActions } from '../../store/actions';
-import { combineLatest, map } from 'rxjs';
+import { combineLatest, map, take } from 'rxjs';
 import { selectCurrentUser } from '../../../auth/store/reducer';
 import { selectSelectedTask, selectTasks } from '../../store/reducer';
+import { TaskInterface } from '../../types/task.interface';
 
 @Component({
   selector: 'app-landing-page-todo',
@@ -15,10 +16,11 @@ import { selectSelectedTask, selectTasks } from '../../store/reducer';
   templateUrl: './landing-page-todo.component.html',
   styleUrl: './landing-page-todo.component.css'
 })
-export class LandingPageTodoComponent implements OnChanges {
+export class LandingPageTodoComponent {
 
   formStatus: string = 'Add New';
   isFormVisible: boolean = false;
+  editTask: TaskInterface | null = null;
 
   taskForm = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
@@ -37,27 +39,15 @@ export class LandingPageTodoComponent implements OnChanges {
     this.store.dispatch(taskActions.getAllTasks())
   }
 
-  ngOnChanges(): void {
-
-  }
 
   onSubmit(formStatus: string) {
     if (formStatus === 'Add New') {
       this.store.dispatch(taskActions.addTask(this.taskForm.getRawValue()));
     }
     if (formStatus === 'Edit') {
-      this.data$
-        .pipe(map(data => data.selectedTask?.id))
-        .subscribe(id => {
-          if (id) {
-            this.store.dispatch(
-              taskActions.updateTask({
-                id: id,
-                task: this.taskForm.getRawValue()
-              })
-            );
-          }
-        });
+      if (this.editTask) {
+        this.store.dispatch(taskActions.updateTask({ id: this.editTask.id, task: this.taskForm.getRawValue() }));
+      }
     }
     this.closeModal();
   }
@@ -66,15 +56,26 @@ export class LandingPageTodoComponent implements OnChanges {
     console.log(id);
     this.store.dispatch(taskActions.deleteTask({ id }));
   }
-  onEdit() {
-    this.formStatus = 'Edit';
-  }
 
-  openModal(formStatus: string) {
-    this.taskForm.reset({ title: '', description: '', status: 'pending' });
+
+  openModal(formStatus: string, id?: number) {
     this.formStatus = formStatus;
+    if (formStatus === 'Add New') {
+      this.taskForm.reset();
+    }
+
+    if (formStatus === 'Edit' && id) {
+      this.store.dispatch(taskActions.getSingleTask({ id }));
+      this.store.select(selectSelectedTask).pipe(take(1)).subscribe((task) => {
+        if (task) {
+          this.taskForm.patchValue(task);
+          this.editTask = task;
+        }
+      });
+    }
     this.isFormVisible = true;
   }
+
 
   closeModal() {
     this.taskForm.reset();

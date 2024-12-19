@@ -26,7 +26,7 @@ export class taskService {
         return this.http.get<ResponseInterface<[TaskInterface]>>(url, options);
     }
 
-    getSingleTask(id: string): Observable<ResponseInterface<TaskInterface>> {
+    getSingleTask(id: number): Observable<ResponseInterface<TaskInterface>> {
         const token = this.persistenceService.get('token')
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',

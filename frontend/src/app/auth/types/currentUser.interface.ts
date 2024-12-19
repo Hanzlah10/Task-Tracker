@@ -4,6 +4,6 @@ export interface CurrentUserInterface {
     email: string;
     created_at: string;
     updated_at: string;
-    refreshToken: string | null;
+    refreshToken?: string | null;
 }
 

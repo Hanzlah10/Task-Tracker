@@ -7,14 +7,17 @@ import { provideState, provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import * as authEffects from './auth/store/effects';
+import * as taskEffects from './tasks/store/effects';
 import { authFeatureKey, authReducer } from './auth/store/reducer';
+import { taskFeatureKey, taskReducer } from './tasks/store/reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideStore(),
-    provideEffects(authEffects),
+    provideEffects(authEffects, taskEffects),
     provideState(authFeatureKey, authReducer),
+    provideState(taskFeatureKey, taskReducer),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideHttpClient(withInterceptors([authInterceptor])),
   ],

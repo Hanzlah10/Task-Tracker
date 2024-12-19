@@ -62,6 +62,29 @@ export const loginEffect = createEffect(
     }
 )
 
+export const getCurrentUserEffect = createEffect(
+    (
+        actions$ = inject(Actions),
+        authService = inject(AuthService)
+    ) => {
+        return actions$.pipe(
+            ofType(AuthActions.getCurrentUser),
+            switchMap(() =>
+                authService.getCurrentUser().pipe(
+                    map((response: ResponseInterface<CurrentUserInterface>) => {
+                        return AuthActions.getCurrentUserSuccess(response)
+                    }),
+                    catchError((errorResponse: ResponseErrorInterface) =>
+                        of(
+                            AuthActions.getCurrentUserFailure(errorResponse)
+                        )
+                    )
+                )
+            )
+        );
+    },
+    { functional: true }
+);
 
 
 export const logoutEffect = createEffect(

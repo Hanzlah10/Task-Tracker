@@ -13,9 +13,9 @@ export const AuthActions = createActionGroup({
         'Login': props<loginRequestInterface>(),
         'Login Success': props<ResponseInterface<CurrentUserInterface>>(),
         'Login Failure': props<ResponseErrorInterface>(),
-        'Logout': emptyProps()
-        // 'getCurrentUser': emptyProps(),
-        // 'getCurrentUser Success': props<{ user: any }>(),
-        // 'getCurrentUser Failure': props<{ error: any }>(),
+        'Logout': emptyProps(),
+        'GetCurrentUser': emptyProps(),
+        'GetCurrentUser Success': props<ResponseInterface<CurrentUserInterface>>(),
+        'GetCurrentUser Failure': props<ResponseErrorInterface>(),
     }
 });

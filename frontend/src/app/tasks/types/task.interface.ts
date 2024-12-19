@@ -6,4 +6,3 @@ export interface TaskInterface {
     created_at?: Date; //optional
     updated_at?: Date; //optional
 }
-

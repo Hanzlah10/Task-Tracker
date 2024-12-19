@@ -6,8 +6,8 @@ const userRouter = Router()
 
 userRouter.route('/register').post(registerUser)
 userRouter.route('/login').post(loginUser)
-userRouter.route('/currentUser').post(verifyJwt, getCurrentUser)
-userRouter.route('/logout').post(verifyJwt, logoutUser)
+userRouter.route('/currentUser').get(verifyJwt, getCurrentUser)
+userRouter.route('/logout').get(verifyJwt, logoutUser)
 
 export { userRouter }
 

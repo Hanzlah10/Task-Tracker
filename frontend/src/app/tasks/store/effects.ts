@@ -85,8 +85,8 @@ export const updateTaskEffect = createEffect(
     ) => {
         return action$.pipe(
             ofType(taskActions.updateTask),
-            switchMap((request) =>
-                TaskService.updateTask(request).pipe(
+            switchMap(({ id, task }) =>
+                TaskService.updateTask(id, task).pipe(
                     map((response: ResponseInterface<TaskInterface>) => {
                         return taskActions.updateTaskSuccess(response)
                     }),

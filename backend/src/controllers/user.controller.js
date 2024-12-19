@@ -122,12 +122,11 @@ const getCurrentUser = asyncHandler(async (req, res) => {
             throw new apiError(404, 'User not found !')
         }
 
-        console.log(CurrentUser);
 
         res
             .status(200)
             .json(
-                new apiResponse(200, "Current User fetched Successfully", CurrentUser)
+                new apiResponse(200, "Current User fetched Successfully", CurrentUser[0])
             )
 
 

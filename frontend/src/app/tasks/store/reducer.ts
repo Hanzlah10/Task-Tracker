@@ -34,11 +34,12 @@ const taskFeature = createFeature({
             error: action.errors,
             message: action.message
         })),
-        on(taskActions.addTaskSuccess, (state, action) => ({
-            ...state,
-            tasks: [...state.tasks, action.data],
-            message: action.message
-        })),
+        on(taskActions.addTaskSuccess, (state, action) => (
+            {
+                ...state,
+                tasks: [...state.tasks, action.data],
+                message: action.message
+            })),
         on(taskActions.addTaskFailure, (state, action) => ({
             ...state,
             error: action.errors,
@@ -46,7 +47,9 @@ const taskFeature = createFeature({
         })),
         on(taskActions.updateTaskSuccess, (state, action) => ({
             ...state,
-            task: [...state.tasks, action.data],
+            tasks: state.tasks.map(task =>
+                task.id === action.data.id ? action.data : task
+            ),
             message: action.message
         })),
         on(taskActions.updateTaskFailure, (state, action) => ({
@@ -56,6 +59,7 @@ const taskFeature = createFeature({
         })),
         on(taskActions.deleteTaskSuccess, (state, action) => ({
             ...state,
+            tasks: state.tasks.filter(task => task.id !== action.data.id),
             message: action.message
         })),
         on(taskActions.deleteTaskFailure, (state, action) => ({

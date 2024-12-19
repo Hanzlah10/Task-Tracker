@@ -17,7 +17,7 @@ export const taskActions = createActionGroup({
         'Add Task Success': props<ResponseInterface<TaskInterface>>(),
         'Add Task Failure': props<ResponseErrorInterface>(),
         'Delete Task': props<{ id: number }>(),
-        'Delete Task Success': props<ResponseInterface<{}>>(),
+        'Delete Task Success': props<ResponseInterface<{ id: number }>>(),
         'Delete Task Failure': props<ResponseErrorInterface>(),
         'Update Task': props<{ id: number, task: CreateTaskInterface }>(),
         'Update Task Success': props<ResponseInterface<TaskInterface>>(),

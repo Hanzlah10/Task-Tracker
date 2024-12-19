@@ -63,7 +63,7 @@ export const deleteTaskEffect = createEffect(
             ofType(taskActions.deleteTask),
             switchMap((request) =>
                 TaskService.deleteTask(request.id).pipe(
-                    map((response: ResponseInterface<{}>) => {
+                    map((response: ResponseInterface<{ id: number }>) => {
                         return taskActions.deleteTaskSuccess(response)
                     }),
                     catchError((errorResponse: ResponseErrorInterface) =>

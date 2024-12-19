@@ -59,7 +59,7 @@ export class taskService {
         return this.http.patch<ResponseInterface<TaskInterface>>(url, task, options);
     }
 
-    deleteTask(id: number): Observable<ResponseInterface<{}>> {
+    deleteTask(id: number): Observable<ResponseInterface<{ id: number }>> {
         const token = this.persistenceService.get('token')
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export class taskService {
         });
         const options = { headers }
         const url = environment.apiUrl + 'tasks/delete/' + id;
-        return this.http.delete<ResponseInterface<{}>>(url, options);
+        return this.http.delete<ResponseInterface<{ id: number }>>(url, options);
     }
 }
 

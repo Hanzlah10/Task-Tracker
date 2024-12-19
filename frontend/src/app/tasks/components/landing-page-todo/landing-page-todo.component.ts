@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../auth/store/actions';
@@ -15,7 +15,7 @@ import { selectSelectedTask, selectTasks } from '../../store/reducer';
   templateUrl: './landing-page-todo.component.html',
   styleUrl: './landing-page-todo.component.css'
 })
-export class LandingPageTodoComponent implements OnInit {
+export class LandingPageTodoComponent implements OnChanges {
 
   formStatus: string = 'Add New';
   isFormVisible: boolean = false;
@@ -32,12 +32,13 @@ export class LandingPageTodoComponent implements OnInit {
     selectedTask: this.store.select(selectSelectedTask)
   })
 
-
-  constructor(private fb: FormBuilder, private store: Store) { }
-
-  ngOnInit(): void {
+  constructor(private fb: FormBuilder, private store: Store) {
     this.store.dispatch(AuthActions.getCurrentUser())
     this.store.dispatch(taskActions.getAllTasks())
+  }
+
+  ngOnChanges(): void {
+
   }
 
   onSubmit(formStatus: string) {
@@ -62,6 +63,7 @@ export class LandingPageTodoComponent implements OnInit {
   }
 
   deleteTask(id: number) {
+    console.log(id);
     this.store.dispatch(taskActions.deleteTask({ id }));
   }
   onEdit() {

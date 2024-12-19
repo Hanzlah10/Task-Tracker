@@ -88,7 +88,6 @@ const loginUser = asyncHandler(async (req, res) => {
         )
 })
 
-
 const logoutUser = asyncHandler(async (req, res) => {
 
     const id = req.body.id
@@ -115,13 +114,11 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
     const userId = req.user.id
     try {
-
         const CurrentUser = await sqlConnection('SELECT id,username,email,created_at,updated_at FROM `users` WHERE id = ?', [userId])
 
         if (!CurrentUser) {
             throw new apiError(404, 'User not found !')
         }
-
 
         res
             .status(200)
@@ -129,13 +126,10 @@ const getCurrentUser = asyncHandler(async (req, res) => {
                 new apiResponse(200, "Current User fetched Successfully", CurrentUser[0])
             )
 
-
     } catch (error) {
         console.log(error)
         throw new apiError(500, "An error occured while fetching current user")
-
     }
-
 })
 
 
@@ -144,5 +138,4 @@ export {
     loginUser,
     logoutUser,
     getCurrentUser
-
 }
